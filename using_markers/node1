@@ -1,0 +1,45 @@
+struct Point
+{
+    float x,
+    float y,
+    float z
+};
+
+int main()
+{
+    ros::init(argc, argv, "basic_shapes");
+    ros::NodeHandle n;
+    ros::Publisher marker_pub =
+    n.advertise<visualization_msgs::MarkerArray>("marker/node", 1);
+
+    Ponit p;
+    std::vector<Point> vec_point;
+    for( int i = 0; i < 10; i++)
+    {
+        p.x = i;
+        p.y = i;
+        p.z = i;
+        vec_point.push_back(p);
+    }
+    visualization_msgs::MarkerArray node_arr;
+    for(size_t i = 0; i < vec_point.size(); i++){
+        Point o_node = vec_point[i];
+
+        visualization_msgs::Marker node;
+        node.header.frame_id = "/map";
+        node.header.stamp = ros::Time::now();
+        node.type = visualization_msgs::Marker::SPHERE;
+        node.id = i;
+        node.action = visualization_msgs::Marker::ADD;
+        node.pose.orientation.w = 1.0;
+        node.pose.position.x = o_node.x;
+        node.pose.position.y = o_node.y;
+
+        node.color.g = 0.5;
+        node.color.a = 1.0;
+        node.scale.x = 1.0;
+        node.scale.y = 1.0;
+        node_arr.markers.push_back(node);
+    }
+    marker_pub .publish(node_arr);
+}
